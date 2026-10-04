@@ -4,6 +4,8 @@ from fastapi.responses import FileResponse
 from PIL import Image
 import io, cv2, numpy as np
 from inference import predict
+import os
+import uvicorn
 
 app = FastAPI()
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
@@ -47,3 +49,6 @@ async def predict_endpoint(file: UploadFile = File(...)):
         "cnn": predict(face, "cnn"),
         "resnet": predict(face, "resnet"),
     }
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 10000))
+    uvicorn.run("server:app", host="0.0.0.0", port=port)
